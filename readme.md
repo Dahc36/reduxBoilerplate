@@ -1,1 +1,1 @@
-Timer React App
+Redux boilerplate
