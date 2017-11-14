@@ -1,38 +1,7 @@
 let redux = require('redux');
+let axios = require('axios');
 
 console.log('Starting redux example');
-
-let stateDefault = {
-	todos: [],
-	searchText: '',
-	showCompleted: false
-};
-
-let count = 0;
-let oldReducer = (state = stateDefault, action) => {
-	switch(action.type){
-		case 'CHANGE_SEARCH_TEXT':
-			return {
-				...state,
-				searchText: action.searchText
-			};
-		case 'ADD_TODO':
-			return {
-				...state,
-				todos: [
-					...state.todos,
-					{id: count++,text: action.todo}
-				]
-			};
-		case 'REMOVE_TODO':
-			return {
-				...state,
-				todos: state.todos.filter((todo) => todo.id !== action.id)
-			};
-		default:
-			return state;
-	}
-};
 
 let searchTextReducer = (state = '', action) => {
 	switch(action.type){
@@ -43,6 +12,7 @@ let searchTextReducer = (state = '', action) => {
 	}
 }
 
+let count = 0;
 let todosReducer = (state = [], action) => {
 	switch(action.type){
 		case 'ADD_TODO':
@@ -66,10 +36,28 @@ let showCompletedReducer = (state = false, action) => {
 	}
 };
 
+let mapReducer = (state = {isFetching: false, url: undefined}, action) => {
+	switch(action.type){
+		case 'START_LOCATION_FETCH':
+			return {
+				isFetching: true,
+				url: undefined
+			};
+		case 'COMPLETE_LOCATION_FETCH':
+			return {
+				isFetching: false,
+				url: action.url
+			};
+		default:
+			return state;
+	}
+};
+
 let reducer = redux.combineReducers({
 	searchText: searchTextReducer,
 	todos: todosReducer,
-	showCompleted: showCompletedReducer
+	showCompleted: showCompletedReducer,
+	map: mapReducer
 });
 
 let store = redux.createStore(reducer, redux.compose(
@@ -83,32 +71,57 @@ let unsubscribe = store.subscribe(() => {
 // unsubscribe();
 
 
-let changeSearchText = (text) => {
-	store.dispatch({
+let changeSearchText = (searchText) => {
+	return {
 		type: 'CHANGE_SEARCH_TEXT',
-		searchText: text
-	});
-}
+		searchText
+	}
+};
 
 let addTodo = (todo) => {
-	store.dispatch({
+	return {
 		type: 'ADD_TODO',
-		todo: todo
-	});
-}
+		todo
+	}
+};
 
 let removeTodo = (id) => {
-	store.dispatch({
+	return {
 		type: 'REMOVE_TODO',
-		id: id
+		id
+	}
+};
+
+let startLocationFetch = () => {
+	return {
+		type: 'START_LOCATION_FETCH'
+	}
+};
+
+let completeLocationFetch = (url) => {
+	return {
+		type: 'COMPLETE_LOCATION_FETCH',
+		url
+	}
+};
+
+let fetchLocation = () => {
+	store.dispatch(startLocationFetch());
+	axios.get('http://ipinfo.io/json').then(function(data){
+		// console.log(data.data);
+		let loc = data.data.loc;
+		let baseUrl = 'http://maps.google.com?q=';
+		store.dispatch(completeLocationFetch(baseUrl+loc));
 	});
-}
 
-changeSearchText('Hello');
-changeSearchText('World');
-changeSearchText('!');
-addTodo('Hello');
-addTodo('World');
-addTodo('!');
-removeTodo(1);
+};
 
+store.dispatch(changeSearchText('Hello'));
+store.dispatch(changeSearchText('World'));
+store.dispatch(changeSearchText('!'));
+store.dispatch(addTodo('Hello'));
+store.dispatch(addTodo('World'));
+store.dispatch(addTodo('!'));
+store.dispatch(removeTodo(1));
+
+fetchLocation();
