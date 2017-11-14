@@ -20,9 +20,17 @@ let reducer = (state = stateDefault, action) => {
 	}
 };
 
-let store = redux.createStore(reducer);
+let store = redux.createStore(reducer, redux.compose(
+	window.devToolsExtension ? window.devToolsExtension() : f => f
+));
 
-console.log(store.getState());
+// Subscribe to changes
+let unsubscribe = store.subscribe(() => {
+	let state = store.getState();
+	console.log(state.searchText);
+});
+// unsubscribe();
+
 
 let changeSearchText = (text) => {
 	store.dispatch({
@@ -31,7 +39,8 @@ let changeSearchText = (text) => {
 	});
 }
 
-changeSearchText('hello');
-console.log(store.getState());
+changeSearchText('Hello');
+changeSearchText('World');
+changeSearchText('!');
 
 
