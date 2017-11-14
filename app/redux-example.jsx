@@ -3,12 +3,26 @@ let redux = require('redux');
 console.log('Starting redux example');
 
 let reducer = (state = {name: 'Anonymous'}, action) => {
-	
-	return state;
+	console.log('New action', action);
+	switch(action.type){
+		case 'CHANGE_NAME':
+			return {
+				...state,
+				name: action.name
+			};
+		default:
+			return state;
+	}
 };
 
 let store = redux.createStore(reducer);
 
-let currentState = store.getState();
+console.log(store.getState());
 
-console.log(currentState);
+let action = {
+	type: 'CHANGE_NAME',
+	name: 'Lokohanks'
+}
+
+store.dispatch(action);
+console.log(store.getState());
