@@ -1,6 +1,4 @@
-console.log('Starting redux example');
-
-let actions = require('./actions/index');
+let actions = require('actions');
 let store = require('./store/configureStore').configure();
 
 // Subscribe to changes
