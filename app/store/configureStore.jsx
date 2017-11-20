@@ -1,9 +1,9 @@
-let redux = require('redux');
-let thunk = require('redux-thunk').default;
-let {searchTextReducer,todosReducer,showCompletedReducer} = require('reducers')
+import * as redux from 'redux';
+import thunk from 'redux-thunk';
 
-export let configure = () => {
+import {searchTextReducer,todosReducer,showCompletedReducer} from 'reducers';
 
+export let configure = (initialState = {}) => {
 	let reducer = redux.combineReducers({
 		searchText: searchTextReducer,
 		todos: todosReducer,

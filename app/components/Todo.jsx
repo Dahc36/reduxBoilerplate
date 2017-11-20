@@ -9,7 +9,8 @@ let Todo = React.createClass({
 		return (
 			<div className={todoClassName}>
 				<label>
-					<input type="checkbox" checked={completed} onChange={() => {dispatch(actions.toggleTodo(id));}}/>
+					<input type="checkbox" checked={completed}
+						onChange={() => {dispatch(actions.startToggleTodo(id,!completed));}}/>
 					<p>{text}</p>
 				</label>
 			</div>

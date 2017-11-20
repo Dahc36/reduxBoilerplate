@@ -11,13 +11,9 @@ let TodoAPI = require('TodoAPI');
 store.subscribe(() => {
 	let state = store.getState();
 	console.log(state);
-	TodoAPI.setTodos(state.todos);
 });
 
-// let emptyArr = [];
-// localStorage.setItem('todos', JSON.stringify(emptyArr));
-let initialTodos = TodoAPI.getTodos();
-store.dispatch(actions.addTodos(initialTodos));
+store.dispatch(actions.startAddTodos());
 
 // Load foundation
 require('style!css!foundation-sites/dist/foundation.min.css');

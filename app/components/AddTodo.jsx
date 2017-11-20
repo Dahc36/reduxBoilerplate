@@ -8,7 +8,7 @@ let AddTodo = React.createClass({
 		let text = this.refs.text.value;
 		if(text !== ''){
 			this.refs.text.value = '';
-			this.props.dispatch(actions.addTodo(text));
+			this.props.dispatch(actions.startAddTodo(text));
 		} else {
 			this.refs.text.focus();
 		}

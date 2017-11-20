@@ -1,3 +1,5 @@
+import firebase, {firebaseRef} from 'app/firebase/firebase.js'
+
 export let setSearchText = (searchText) => {
 	return {
 		type: 'SET_SEARCH_TEXT',
@@ -5,18 +7,48 @@ export let setSearchText = (searchText) => {
 	}
 };
 
-export let addTodo = (text) => {
+export let addTodo = (todo) => {
 	return {
 		type: 'ADD_TODO',
-		text
+		todo
 	}
 };
 
-export let toggleTodo = (id) => {
+export let startAddTodo = (text) => {
+	return (dispatch, getState) => {
+		let newTodo = {
+			text,
+			completed: false
+		};
+		let todoRef = firebaseRef.child('todos').push(newTodo);
+
+		todoRef.then(() => {
+			dispatch(addTodo({
+				...newTodo,
+				id: todoRef.key
+			}));
+		});
+	};
+}
+
+export let updateTodo = (id, completed) => {
 	return {
-		type: 'TOGGLE_TODO',
-		id
+		type: 'UPDATE_TODO',
+		id,
+		completed
 	}
+};
+
+export let startToggleTodo = (id, completed) => {
+	return (dispatch, getState) => {
+		let todoRef = firebaseRef.child('todos/'+id);
+
+		todoRef.update({
+			completed
+		}).then(() => {
+			dispatch(updateTodo(id, completed))
+		});
+	};
 };
 
 export let addTodos = (todos) => {
@@ -24,6 +56,29 @@ export let addTodos = (todos) => {
 		type: 'ADD_TODOS',
 		todos
 	}
+};
+
+export let startAddTodos = (todos) => {
+	return (dispatch, getState) => {
+		let todosRef = firebaseRef.child('todos');
+		let todosList = [];
+
+		todosRef.once('value',(snapshot) => {
+			let todosValues = snapshot.val();
+			for(let key in todosValues){
+				// console.log(key, todosValues[key]);
+				todosList = [
+					...todosList,
+					{
+						...todosValues[key],
+						id: key
+					}
+				];
+			}
+		}).then(() => {
+			dispatch(addTodos(todosList));
+		});
+	};
 };
 
 export let toggleShowCompleted = () => {
