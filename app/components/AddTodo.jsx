@@ -1,15 +1,14 @@
 let React = require('react');
+let {connect} = require('react-redux');
+let actions = require('actions');
 
 let AddTodo = React.createClass({
-	propTypes: {
-		onAddTodo: React.PropTypes.func.isRequired
-	},
 	onAddTodo: function(e){
 		e.preventDefault();
 		let text = this.refs.text.value;
 		if(text !== ''){
 			this.refs.text.value = '';
-			this.props.onAddTodo(text);
+			this.props.dispatch(actions.addTodo(text));
 		} else {
 			this.refs.text.focus();
 		}
@@ -26,4 +25,4 @@ let AddTodo = React.createClass({
 	}
 });
 
-module.exports = AddTodo;
+module.exports = connect()(AddTodo);
