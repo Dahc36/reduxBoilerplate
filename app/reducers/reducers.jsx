@@ -21,7 +21,7 @@ export let todosReducer = (state = [], action) => {
 				if(todo.id === action.id){
 					return {
 						...todo,
-						completed: !todo.completed;
+						completed: !todo.completed
 					};
 				} else {
 					return todo;
