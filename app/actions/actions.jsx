@@ -20,7 +20,7 @@ export let startAddTodo = (text) => {
 			text,
 			completed: false
 		};
-		let todoRef = firebaseRef.child('todos').push(newTodo);
+		let todoRef = firebaseRef.child('users/' + getState().auth.uid + '/todos').push(newTodo);
 
 		todoRef.then(() => {
 			dispatch(addTodo({
@@ -41,7 +41,7 @@ export let updateTodo = (id, completed) => {
 
 export let startToggleTodo = (id, completed) => {
 	return (dispatch, getState) => {
-		let todoRef = firebaseRef.child('todos/'+id);
+		let todoRef = firebaseRef.child('users/' + getState().auth.uid + '/todos/'+id);
 
 		todoRef.update({
 			completed
@@ -60,7 +60,7 @@ export let addTodos = (todos) => {
 
 export let startAddTodos = (todos) => {
 	return (dispatch, getState) => {
-		let todosRef = firebaseRef.child('todos');
+		let todosRef = firebaseRef.child('users/' + getState().auth.uid + '/todos');
 		let todosList = [];
 
 		todosRef.once('value',(snapshot) => {
@@ -87,7 +87,7 @@ export let toggleShowCompleted = () => {
 export let startLogin = () => {
 	return (dispatch, getState) => {
 		firebase.auth().signInWithPopup(googleProvider).then((data) => {
-			console.log(data);
+			// console.log(data);
 			var token = data.credential.accessToken;
 			var user = data.user;
 		}).catch((error) => {
