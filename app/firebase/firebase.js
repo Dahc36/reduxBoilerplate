@@ -15,4 +15,5 @@ try{
 }
 
 export let firebaseRef = firebase.database().ref();
+export let googleProvider = new firebase.auth.GoogleAuthProvider();
 export default firebase;

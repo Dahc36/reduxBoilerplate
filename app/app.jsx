@@ -4,6 +4,9 @@ let {Provider} = require('react-redux');
 let {Route, Router, IndexRoute, hashHistory} = require('react-router');
 
 let TodoApp = require('TodoApp');
+let Main = require('Main');
+let Login = require('Login');
+
 let actions = require('actions');
 let store = require('configureStore').configure();
 let TodoAPI = require('TodoAPI');
@@ -25,7 +28,12 @@ require('style!css!sass!applicationStyles');
 ReactDOM.render(
 	<div>
 		<Provider store={store}>
-			<TodoApp/>
+			<Router history={hashHistory}>
+				<Route path="/" component={Main}>
+					<Route path="todos" component={TodoApp}/>
+					<IndexRoute component={Login}/>
+				</Route>
+			</Router>
 		</Provider>
 	</div>,
 	document.getElementById('app')

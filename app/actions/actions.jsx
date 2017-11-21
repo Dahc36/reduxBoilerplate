@@ -1,4 +1,4 @@
-import firebase, {firebaseRef} from 'app/firebase/firebase.js'
+import firebase, {firebaseRef, googleProvider} from 'app/firebase/firebase.js'
 
 export let setSearchText = (searchText) => {
 	return {
@@ -64,16 +64,13 @@ export let startAddTodos = (todos) => {
 		let todosList = [];
 
 		todosRef.once('value',(snapshot) => {
-			let todosValues = snapshot.val();
+			let todosValues = snapshot.val() || {};
 			for(let key in todosValues){
 				// console.log(key, todosValues[key]);
-				todosList = [
-					...todosList,
-					{
-						...todosValues[key],
-						id: key
-					}
-				];
+				todosList.push({
+					...todosValues[key],
+					id: key
+				});
 			}
 		}).then(() => {
 			dispatch(addTodos(todosList));
@@ -85,4 +82,26 @@ export let toggleShowCompleted = () => {
 	return {
 		type: 'TOGGLE_SHOW_COMPLETED'
 	};
+}
+
+export let startLogin = () => {
+	return (dispatch, getState) => {
+		firebase.auth().signInWithPopup(googleProvider).then((data) => {
+			console.log(data);
+			var token = data.credential.accessToken;
+			var user = data.user;
+		}).catch((error) => {
+			console.log(error)
+		});
+	}
+}
+
+export let startLogout = () => {
+	return (dispatch, getState) => {
+		firebase.auth().signOut().then(function() {
+			console.log('Logged out');
+		}).catch(function(error) {
+			console.log(error);
+		});
+	}
 }
