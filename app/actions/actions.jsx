@@ -105,3 +105,16 @@ export let startLogout = () => {
 		});
 	}
 }
+
+export let login = (uid) => {
+	return {
+		type: 'LOGIN',
+		uid
+	}
+};
+
+export let logout = () => {
+	return {
+		type: 'LOGOUT'
+	}
+};
